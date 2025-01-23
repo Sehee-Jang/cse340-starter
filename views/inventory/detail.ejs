@@ -1,0 +1,28 @@
+<main>
+  <h1><%= vehicleData.inv_make %>, <%= vehicleData.inv_model %></h1>
+
+  <div class="vehicle-detail">
+    <img
+      src="<%= vehicleData.inv_image %>"
+      alt="Image of <%= vehicleData.inv_make %> <%= vehicleData.inv_model %>"
+    />
+    <div class="vehicle-info">
+      <p>
+        <strong>Price:</strong> 
+        $<%= new Intl.NumberFormat('en-US').format(vehicleData.inv_price) %>
+      </p>
+      <p><strong>Description:</strong> <%= vehicleData.inv_description %></p>
+      <p><strong>Year:</strong> <%= vehicleData.inv_year %></p>
+      <p>
+        <strong>Mileage:</strong>
+        <%= new Intl.NumberFormat('en-US').format(vehicleData.inv_miles) %> miles
+      </p>
+      <p><strong>Color:</strong> <%= vehicleData.inv_color %></p>
+    </div>
+  </div>
+  <div class="button-container">
+    <a href="/inv/type/<%= vehicleData.classification_id %>" class="button"
+      >Back to Inventory</a
+    >
+  </div>
+</main>
