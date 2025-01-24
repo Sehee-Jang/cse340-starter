@@ -190,6 +190,12 @@ footer {
   background-color: #0940a3;
 }
 
+/* Error */
+.error-container {
+      text-align: center;
+      padding: 50px;
+    }
+
 /* Larger Screens (768px and above) */
 @media (min-width: 768px) {
   header {
