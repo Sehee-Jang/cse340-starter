@@ -20,6 +20,9 @@ a {
 ul {
   list-style-type: none;
 }
+.bold {
+  font-weight: bold;
+}
 
 #top-header {
   padding: 1rem;
@@ -191,10 +194,116 @@ footer {
 }
 
 /* Error */
-.error-container {
-      text-align: center;
-      padding: 50px;
-    }
+.error-container,
+.content-container {
+  text-align: center;
+  padding: 50px;
+}
+
+/* Login */
+.login-form {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.login-form label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.login-form button,
+.register-form button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-form button:hover,
+.register-form button:hover {
+  background-color: #0056b3;
+}
+
+.flash-message {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Example styles for registration form */
+.register-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.register-form label {
+  display: block;
+  margin: 8px 0 4px;
+  text-align: left;
+}
+
+.register-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.register-form .password-requirements {
+  margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+  .password-requirements p {
+    font-weight: bold;
+    margin: 0 0 5px;
+  }
+
+  .password-requirements ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+
+  .password-requirements li {
+    margin: 5px 0;
+  }
+
+  input:invalid {
+    border-color: red;
+  }
+
+  input:valid {
+    border-color: green;
+  }
+
 
 /* Larger Screens (768px and above) */
 @media (min-width: 768px) {
