@@ -9,7 +9,6 @@ async function getClassifications() {
   );
 }
 
-
 /* ***************************
  *  Get all inventory items and classification_name by classification_id
  * ************************** */
@@ -41,9 +40,32 @@ async function getVehicleById(vehicle_id) {
   }
 }
 
+// async function addClassification (classification_name) {
+//   const sql = "INSERT INTO classification (classification_name) VALUES (?)";
+//   return db.query(sql, [classification_name]);
+// };
+
+/* ***************************
+ *  Add a new classification
+ * ************************** */
+async function addClassification(classification_name) {
+  try {
+    const query = `
+      INSERT INTO public.classification (classification_name)
+      VALUES ($1)
+      RETURNING *;`;
+    const result = await pool.query(query, [classification_name]);
+    return result.rows[0]; // Return the inserted classification
+  } catch (error) {
+    console.error("addClassification error: " + error);
+    throw new Error("Error adding classification");
+  }
+}
+
 
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
   getVehicleById,
+  addClassification,
 };

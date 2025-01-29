@@ -1,0 +1,9 @@
+<form action="/inv/add-inventory" method="post">
+  <label for="classification_id">Classification:</label>
+  <%= classificationList %>
+  <label for="inv_make">Make:</label>
+  <input type="text" id="inv_make" name="inv_make" required />
+  <label for="inv_model">Model:</label>
+  <input type="text" id="inv_model" name="inv_model" required />
+  <button type="submit">Add Inventory</button>
+</form>

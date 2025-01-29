@@ -7,7 +7,10 @@ const invController = require("../controllers/invController");
 router.get("/type/:classificationId", invController.buildByClassificationId);
 
 // Route to display vehicle details by inventory ID
-// router.get("/inv/detail/:invId", invController.buildByInvId);
 router.get("/detail/:vehicleId", invController.getInventoryItem);
+
+router.get("/", invController.renderManagementView);
+router.post("/add-classification", invController.addClassification);
+router.post("/add-inventory", invController.addInventoryItem);
 
 module.exports = router;

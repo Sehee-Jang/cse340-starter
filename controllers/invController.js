@@ -1,5 +1,6 @@
 const invModel = require("../models/inventory-model");
 const utilities = require("../utilities/");
+const inventoryModel = require("../models/inventory-model");
 
 const invCont = {};
 
@@ -43,6 +44,78 @@ invCont.getInventoryItem = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+invCont.renderManagementView = (req, res) => {
+  const flashMessage = req.flash("info"); // Flash 메시지 가져오기
+  res.render("inventory/management", { flashMessage });
+};
+
+invCont.addClassification = async (req, res) => {
+  const { classification_name } = req.body;
+  try {
+    await inventoryModel.addClassification(classification_name);
+    req.flash("info", "Classification added successfully!");
+    res.redirect("/inv/");
+  } catch (error) {
+    req.flash("error", "Failed to add classification.");
+    res.redirect("/inv/add-classification");
+  }
+};
+
+/* ***************************
+ *  Add a new inventory item
+ * ************************** */
+invCont.addInventoryItem = async (req, res) => {
+  const {
+    classification_id,
+    make,
+    model,
+    year,
+    description,
+    price,
+    image_url,
+    thumbnail_url,
+    mileage,
+    color,
+  } = req.body;
+
+  if (
+    !classification_id ||
+    !make ||
+    !model ||
+    !year ||
+    !description ||
+    !price ||
+    !image_url ||
+    !thumbnail_url ||
+    !mileage ||
+    !color
+  ) {
+    req.flash("error", "All fields are required.");
+    return res.redirect("/inv/add-inventory");
+  }
+
+  try {
+    const newInventoryItem = await invModel.addInventoryItem({
+      classification_id,
+      make,
+      model,
+      year,
+      description,
+      price,
+      image_url,
+      thumbnail_url,
+      mileage,
+      color,
+    });
+    req.flash("info", "Inventory item added successfully!");
+    res.redirect("/inv/");
+  } catch (error) {
+    console.error("addInventoryItem error:", error);
+    req.flash("error", "Failed to add inventory item.");
+    res.redirect("/inv/add-inventory");
   }
 };
 

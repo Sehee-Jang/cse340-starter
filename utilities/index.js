@@ -102,4 +102,15 @@ Util.buildVehicleDetailHTML = async function (vehicle) {
   return detail;
 };
 
+Util.buildClassificationList = async () => {
+  const classifications = await invModel.getClassifications();
+  let list = '<select name="classification_id" required>';
+  list += "<option value=''>Choose a Classification</option>";
+  classifications.forEach((classification) => {
+    list += `<option value="${classification.classification_id}">${classification.classification_name}</option>`;
+  });
+  list += "</select>";
+  return list;
+};
+
 module.exports = Util;
