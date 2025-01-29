@@ -40,11 +40,6 @@ async function getVehicleById(vehicle_id) {
   }
 }
 
-// async function addClassification (classification_name) {
-//   const sql = "INSERT INTO classification (classification_name) VALUES (?)";
-//   return db.query(sql, [classification_name]);
-// };
-
 /* ***************************
  *  Add a new classification
  * ************************** */
