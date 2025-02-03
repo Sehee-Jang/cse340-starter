@@ -1,0 +1,15 @@
+<div class="content-container">
+  <h1>You're logged in</h1>
+
+  <!-- Display flash messages -->
+  <div>
+      <% if (flashMessages.length > 0) { %>
+        <div>
+          <% flashMessages.forEach(function(message) { %>
+            <p><%= message %></p>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+
+</div>
