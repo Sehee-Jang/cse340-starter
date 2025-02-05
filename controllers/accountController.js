@@ -1,6 +1,7 @@
 const utilities = require("../utilities/");
 const pool = require("../database/");
 const bcrypt = require("bcrypt");
+// const { registerAccount } = require("../models/account-model");
 
 /* ****************************************
  *  Deliver login view
@@ -86,7 +87,7 @@ const registerAccount = async (req, res) => {
     const hashedPassword = await bcrypt.hash(account_password, 10);
 
     try {
-      // 데Save user to the database
+      // Save user to the database
       const result = await pool.query(
         "INSERT INTO account (account_firstname, account_lastname, account_email, account_password) VALUES ($1, $2, $3, $4) RETURNING *",
         [account_first_name, account_last_name, account_email, hashedPassword]
@@ -106,6 +107,29 @@ const registerAccount = async (req, res) => {
     res.status(500).send("An issue occurred during registration.");
   }
 };
+// const registerAccountHandler = async (req, res) => {
+//   try {
+//     const { account_firstname, account_lastname, account_email, account_password } = req.body;
+
+//     if (!account_firstname || !account_lastname || !account_email, account_password) {
+//       return res.status(400).send("Please fill in all required fields.");
+//     }
+
+//     const hashedPassword = await bcrypt.hash(account_password, 10);
+
+//     try {
+//       const result = await registerAccount(account_firstname, account_lastname, account_email, hashedPassword);
+//       setTimeout(() => res.redirect("/account/login"), 2000);
+//     } catch (error) {
+//       console.error("Registration error: ", error)
+//       res.status(500).send("Server error, please try again.");
+//     }
+//   } catch (error) {
+//      console.error("Registration processing error: ", error);
+//      res.status(500).send("An issue occured during registration.");
+//   }
+// }
+
 const loginAccount = async (req, res) => {
   try {
     const { account_email, account_password } = req.body;

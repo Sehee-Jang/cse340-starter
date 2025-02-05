@@ -1,12 +1,35 @@
 <div class="content-container">
   <h1>Inventory Management</h1>
+  <p>Select a classification to view inventory items.</p>
 
   <% if (flashMessage) { %>
   <div class="flash-message"><%= flashMessage %></div>
   <% } %>
+
+  <!-- Classification select list -->
+  <form>
+    <label for="classificationList">Select Classification:</label>
+    <select id="classification">
+      <% if (Array.isArray(classificationSelect)) { %> <%
+      classificationSelect.forEach(classification => { %>
+      <option value="<%= classification.classification_id %>">
+        <%= classification.classification_name %>
+      </option>
+      <% }); %> <% } else { %>
+      <option>No classifications available</option>
+      <% } %>
+    </select>
+  </form>
+
+  <!-- Table that inventory items returned from the controller -->
+  <table id="inventoryDisplay"></table>
+
+  <noscript>JavaScript must be enabled to use this page.</noscript>
 
   <div class="links">
     <a href="/inventory/add-classification">Add New Classification</a>
     <a href="/inventory/add-inventory">Add New Inventory</a>
   </div>
 </div>
+
+<script src="/js/inventory.js" defer></script>

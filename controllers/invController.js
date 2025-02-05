@@ -46,10 +46,53 @@ invCont.getInventoryItem = async (req, res, next) => {
     next(error);
   }
 };
+// 수정 전
+// invCont.renderManagementView = (req, res) => {
+//   const flashMessage = req.flash("info"); // Flash 메시지 가져오기
+//   res.render("inventory/management", { flashMessage });
+// };
 
-invCont.renderManagementView = (req, res) => {
-  const flashMessage = req.flash("info"); // Flash 메시지 가져오기
-  res.render("inventory/management", { flashMessage });
+invCont.buildManagementView = async (req, res) => {
+  console.log("Build Management View called");
+  let nav = await utilities.getNav();
+  const classificationSelect = await utilities.buildClassificationList();
+  const flashMessage = req.flash("info");
+
+  if (!Array.isArray(classificationSelect)) {
+    console.error(
+      "classificationSelect is not an array:",
+      classificationSelect
+    );
+    classificationSelect = [];
+  }
+
+  console.log("classificationSelect:", classificationSelect);
+
+  res.render("./inventory/management", {
+    title: "Inventory Management",
+    nav,
+    classificationSelect,
+    flashMessage,
+  });
+};
+
+invCont.getInventoryJSON = async function (req, res, next) {
+  try {
+    const classification_id = req.params.classificationId;
+    const inventoryData = await invModel.getInventoryByClassificationId(
+      classification_id
+    );
+
+    if (!inventoryData.length) {
+      return res
+        .status(404)
+        .json({ message: "No vehicles found for this classification." });
+    }
+
+    res.json(inventoryData);
+  } catch (error) {
+    next(error);
+  }
 };
 
 invCont.addClassification = async (req, res) => {

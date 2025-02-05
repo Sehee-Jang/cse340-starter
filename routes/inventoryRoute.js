@@ -9,7 +9,9 @@ router.get("/type/:classificationId", invController.buildByClassificationId);
 // Route to display vehicle details by inventory ID
 router.get("/detail/:vehicleId", invController.getInventoryItem);
 
-router.get("/", invController.renderManagementView);
+router.get("/", invController.buildManagementView);
+router.get("/getInventory/:classificationId", invController.getInventoryJSON);
+
 router.post("/add-classification", invController.addClassification);
 router.post("/add-inventory", invController.addInventoryItem);
 

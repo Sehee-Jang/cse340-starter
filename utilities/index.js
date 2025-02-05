@@ -103,7 +103,8 @@ Util.buildVehicleDetailHTML = async function (vehicle) {
 };
 
 Util.buildClassificationList = async () => {
-  const classifications = await invModel.getClassifications();
+  const result = await invModel.getClassifications();
+  const classifications = result.rows; 
   let list = '<select name="classification_id" required>';
   list += "<option value=''>Choose a Classification</option>";
   classifications.forEach((classification) => {
