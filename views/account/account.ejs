@@ -1,0 +1,16 @@
+<div class="content-container">
+  <h1>You're logged in</h1>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+  <div class="flash-message"><%= message %></div>
+  <% } %>
+
+  <!-- Display validation errors -->
+  <% if (errors) { %>
+  <ul class="notice">
+    <% errors.array().forEach(error => { %>
+    <li><%= error.msg %></li>
+    <% }) %>
+  </ul>
+  <% } %>
+</div>

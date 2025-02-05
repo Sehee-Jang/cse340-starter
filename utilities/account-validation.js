@@ -54,7 +54,7 @@ validate.registrationRules = () => {
 validate.checkResults = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    const messages = errors.array().map((error) => error.msg);
+    const messages = errors.errors.map((error) => error.msg);
     const nav = utilities.getNav(); // Assuming you have a getNav() function
     return res.render("account/register", {
       title: "Register",
@@ -69,23 +69,19 @@ validate.checkResults = (req, res, next) => {
  * Check data and return errors or continue to registration
  * ***************************** */
 validate.checkRegData = async (req, res, next) => {
-  const { account_firstname, account_lastname, account_email } = req.body
-  let errors = []
-  errors = validationResult(req)
+  const errors = validationResult(req); 
   if (!errors.isEmpty()) {
-    let nav = await utilities.getNav()
-    res.render("account/register", {
-      errors,
+    const nav = await utilities.getNav(); 
+    return res.render("account/register", {
+      errors: errors.errors, 
       title: "Registration",
       nav,
-      account_firstname,
-      account_lastname,
-      account_email,
-    })
-    return
+      account_firstname: req.body.account_firstname,
+      account_lastname: req.body.account_lastname,
+      account_email: req.body.account_email,
+    });
   }
-  next()
-}
+  next();
+};
 
-module.exports = validate
-
+module.exports = validate;
