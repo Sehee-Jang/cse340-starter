@@ -1,0 +1,24 @@
+<form action="/inv/update" method="post">
+  <input type="hidden" name="inv_id" value="<%= inv_id %>" />
+
+  <label for="classification_id">Classification:</label>
+  <select name="classification_id" required>
+    <option value="">Choose a Classification</option>
+    <option value="1" <%= classification_id == 1 ? "selected" : "" %>>Custom</option>
+    <option value="5" <%= classification_id == 5 ? "selected" : "" %>>Sedan</option>
+    <option value="2" <%= classification_id == 2 ? "selected" : "" %>>Sport</option>
+    <option value="3" <%= classification_id == 3 ? "selected" : "" %>>SUV</option>
+    <option value="4" <%= classification_id == 4 ? "selected" : "" %>>Truck</option>
+  </select>
+
+  <label for="inv_make">Make:</label>
+  <input type="text" id="inv_make" name="inv_make" value="<%= inv_make || '' %>" required />
+
+  <label for="inv_model">Model:</label>
+  <input type="text" id="inv_model" name="inv_model" value="<%= inv_model || '' %>" required />
+
+  <label for="inv_year">Year:</label>
+  <input type="text" id="inv_year" name="inv_year" value="<%= inv_year || '' %>" required />
+
+  <button type="submit">Update Inventory</button>
+</form>

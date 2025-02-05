@@ -162,4 +162,50 @@ invCont.addInventoryItem = async (req, res) => {
   }
 };
 
+// ***************************
+// Edit inventory view
+// ***************************
+invCont.editInventoryView = async function (req, res, next) {
+  try {
+    const inv_id = parseInt(req.params.inv_id); // URL로 전달된 inv_id를 받아옴
+    console.log("inv_id: ", inv_id);
+    let nav = await utilities.getNav(); // 네비게이션 데이터를 가져옴
+    const itemData = await invModel.getVehicleById(inv_id); // 차량 데이터를 DB에서 가져옴
+
+    // If itemData is not found, return 404 error
+    if (!itemData) {
+      return res.status(404).send("Item not found");
+    }
+
+    // Classification dropdown list
+    const classificationSelect = await utilities.buildClassificationList(
+      itemData.classification_id
+    );
+
+    const itemName = `${itemData.inv_make} ${itemData.inv_model}`; // 차량 이름 (제조사 + 모델)
+
+    // Render edit-inventory view
+    res.render("./inventory/edit-inventory", {
+      title: "Edit " + itemName,
+      nav,
+      classificationSelect: classificationSelect,
+      errors: null,
+      inv_id: itemData.inv_id,
+      inv_make: itemData.inv_make,
+      inv_model: itemData.inv_model,
+      inv_year: itemData.inv_year,
+      inv_description: itemData.inv_description,
+      inv_image: itemData.inv_image,
+      inv_thumbnail: itemData.inv_thumbnail,
+      inv_price: itemData.inv_price,
+      inv_miles: itemData.inv_miles,
+      inv_color: itemData.inv_color,
+      classification_id: itemData.classification_id,
+    });
+  } catch (error) {
+    console.error("Error loading inventory edit page:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
 module.exports = invCont;

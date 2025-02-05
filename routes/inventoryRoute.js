@@ -10,6 +10,10 @@ router.get("/type/:classificationId", invController.buildByClassificationId);
 router.get("/detail/:vehicleId", invController.getInventoryItem);
 
 router.get("/", invController.buildManagementView);
+
+// Route to display edit inventory view
+router.get("/edit/:inv_id", invController.editInventoryView);
+
 router.get("/getInventory/:classificationId", invController.getInventoryJSON);
 
 router.post("/add-classification", invController.addClassification);
