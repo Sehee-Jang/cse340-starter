@@ -57,10 +57,116 @@ async function addClassification(classification_name) {
   }
 }
 
+/* ***************************
+ *  Update inventory item
+ * ************************** */
+// const updateInventoryItem = async ({
+//   inv_id,
+//   classification_id,
+//   make,
+//   model,
+//   year,
+//   description,
+//   price,
+//   image_url,
+//   thumbnail_url,
+//   mileage,
+//   color,
+// }) => {
+//   const query = `
+//     UPDATE inventory
+//     SET classification_id = ?, make = ?, model = ?, year = ?, description = ?, price = ?, image_url = ?, thumbnail_url = ?, mileage = ?, color = ?
+//     WHERE inv_id = ?;
+//   `;
+//   const params = [
+//     classification_id,
+//     make,
+//     model,
+//     year,
+//     description,
+//     price,
+//     image_url,
+//     thumbnail_url,
+//     mileage,
+//     color,
+//     inv_id,
+//   ];
+
+//   try {
+//     const result = await db.query(query, params); // db.query를 통해 데이터베이스에 업데이트 쿼리 실행
+//     return result;
+//   } catch (error) {
+//     console.error("Error in updateInventoryItem:", error);
+//     throw error;
+//   }
+// };
+
+// async function updateInventory(
+//   inv_id,
+//   inv_make,
+//   inv_model,
+//   inv_description,
+//   inv_image,
+//   inv_thumbnail,
+//   inv_price,
+//   inv_year,
+//   inv_miles,
+//   inv_color,
+//   classification_id
+// ) {
+//   try {
+//     const sql =
+//       "UPDATE public.inventory SET inv_make = $1, inv_model = $2, inv_description = $3, inv_image = $4, inv_thumbnail = $5, inv_price = $6, inv_year = $7, inv_miles = $8, inv_color = $9, classification_id = $10 WHERE inv_id = $11 RETURNING *";
+//     const data = await pool.query(sql, [
+//       inv_make,
+//       inv_model,
+//       inv_description,
+//       inv_image,
+//       inv_thumbnail,
+//       inv_price,
+//       inv_year,
+//       inv_miles,
+//       inv_color,
+//       classification_id,
+//       inv_id,
+//     ]);
+//     return data.rows[0];
+//   } catch (error) {
+//     console.error("model error: " + error);
+//   }
+// }
+
+async function updateInventoryItem(inv_id, updatedData) {
+  try {
+    const sql = `
+      UPDATE public.inventory
+      SET inv_make = $1, inv_model = $2, inv_description = $3, inv_image = $4,inv_thumbnail = $5, inv_price = $6, inv_year = $7, inv_miles = $8, inv_color = $9, classification_id = $10 WHERE inv_id = $11 RETURNING *
+    `;
+    const values = [
+      updatedData.classification_id,
+      updatedData.make,
+      updatedData.model,
+      updatedData.year,
+      updatedData.description,
+      updatedData.price,
+      updatedData.image_url,
+      updatedData.thumbnail_url,
+      updatedData.mileage,
+      updatedData.color,
+      inv_id,
+    ];
+    const result = await pool.query(sql, values);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Update error:", error);
+    throw error;
+  }
+}
 
 module.exports = {
   getClassifications,
   getInventoryByClassificationId,
   getVehicleById,
   addClassification,
+  updateInventoryItem,
 };

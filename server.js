@@ -16,6 +16,7 @@ const inventoryRoute = require("./routes/inventoryRoute");
 const errorRoute = require("./routes/errorRoute");
 const errorHandler = require("./middleware/errorHandler.js");
 const accountRoute = require("./routes/accountRoute");
+const flash = require("connect-flash");
 
 /* ***********************
  * Middleware
@@ -40,7 +41,8 @@ app.use(
 );
 
 // Express Messages Middleware
-app.use(require("connect-flash")());
+// app.use(require("connect-flash")());
+app.use(flash());
 app.use(function (req, res, next) {
   res.locals.messages = require("express-messages")(req, res);
   next();
