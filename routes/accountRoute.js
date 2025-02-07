@@ -12,7 +12,7 @@ router.post("/register", accountController.registerAccount);
 
 router.post("/login", accountController.loginAccount);
 
-router.get("/", accountController.accountManagement);
+router.get("/", utilities.checkLogin, accountController.accountManagement);
 
 router.use((err, req, res, next) => {
   console.error(err.stack);
