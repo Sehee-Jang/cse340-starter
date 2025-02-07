@@ -17,7 +17,7 @@ router.get("/edit/:inv_id", invController.editInventoryView);
 
 router.get("/getInventory/:classificationId", invController.getInventoryJSON);
 
-router.post("/update", invController.updateInventory);
+router.post("/update/:inv_id", checkUpdateData, invController.updateInventory);
 
 router.post("/add-classification", invController.addClassification);
 router.post("/add-inventory", invController.addInventoryItem);

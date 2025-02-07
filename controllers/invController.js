@@ -1,5 +1,6 @@
 const invModel = require("../models/inventory-model");
 const utilities = require("../utilities/");
+const pool = require("../database/");
 
 const invCont = {};
 
@@ -54,7 +55,7 @@ invCont.getInventoryItem = async (req, res, next) => {
 invCont.buildManagementView = async (req, res) => {
   console.log("Build Management View called");
   let nav = await utilities.getNav();
-  const classificationSelect = await utilities.buildClassificationList();
+  let classificationSelect = await utilities.buildClassificationList();
   const flashMessage = req.flash("info");
 
   if (!Array.isArray(classificationSelect)) {
@@ -65,7 +66,8 @@ invCont.buildManagementView = async (req, res) => {
     classificationSelect = [];
   }
 
-  console.log("classificationSelect:", classificationSelect);
+  console.log("📍 classificationSelect:", classificationSelect);
+  console.log("📍 Type of classificationSelect:", typeof classificationSelect);
 
   res.render("./inventory/management", {
     title: "Inventory Management",
@@ -181,7 +183,7 @@ invCont.editInventoryView = async function (req, res, next) {
     const classificationSelect = await utilities.buildClassificationList(
       itemData.classification_id
     );
-
+    console.log("📍 Fetched classificationSelect:", classificationSelect.rows);
     const itemName = `${itemData.inv_make} ${itemData.inv_model}`; // 차량 이름 (제조사 + 모델)
 
     // Render edit-inventory view
@@ -211,97 +213,158 @@ invCont.editInventoryView = async function (req, res, next) {
 // ***************************
 // Update inventory item
 // ***************************
-// invCont.updateInventory = async function (req, res) {
-//   let nav = await utilities.getNav();
-//   const {
-//     inv_id,
-//     inv_make,
-//     inv_model,
-//     inv_description,
-//     inv_image,
-//     inv_thumbnail,
-//     inv_price,
-//     inv_year,
-//     inv_miles,
-//     inv_color,
-//     classification_id,
-//   } = req.body;
+// invCont.updateInventory = async (req, res) => {
+//   const inv_id = parseInt(req.params.inv_id);
+//   console.log("Update request received for inv_id: ", inv_id);
 
-//   const updateResult = await invModel.updateInventory(
-//     inv_id,
-//     inv_make,
-//     inv_model,
-//     inv_description,
-//     inv_image,
-//     inv_thumbnail,
-//     inv_price,
-//     inv_year,
-//     inv_miles,
-//     inv_color,
-//     classification_id
-//   );
+//   if (isNaN(inv_id)) {
+//     req.flash("error", "Invalid inventory ID.");
+//     return res.redirect(`/inv/edit/${req.params.inv_id}`);
+//   }
 
-//   if (updateResult) {
-//     const itemName = updateResult.inv_make + " " + updateResult.inv_model;
-//     req.flash("notice", `The ${itemName} was successfully updated.`);
-//     res.redirect("/inv/");
-//   } else {
-//     req.flash("notice", "Sorry, the update failed.");
-//     const classificationSelect = await utilities.buildClassificationList(
-//       classification_id
-//     );
-//     const itemName = `${inv_make} ${inv_model}`;
-//     res.status(501).render("inventory/edit-inventory", {
-//       title: "Edit " + itemName,
-//       nav,
-//       classificationSelect: classificationSelect,
-//       errors: null,
+//   const updatedData = req.body;
+
+//   try {
+//     console.log("Received body data: ", updatedData);
+
+//     const updateResult = await invModel.updateInventoryItem(
 //       inv_id,
+//       updatedData
+//     );
+
+//     console.log("Update result: ", updateResult.rowCount);
+
+//     if (updateResult.rowCount > 0) {
+//       req.flash("success", "Inventory item updated successfully!");
+//       res.redirect(`/inv/detail/${inv_id}`);
+//     } else {
+//       req.flash("error", "Failed to update inventory.");
+//       res.redirect(`/inv/edit/${inv_id}`);
+//     }
+//   } catch (error) {
+//     console.error("Update error:", error);
+//     req.flash("error", "An error occurred while updating inventory.");
+//     res.redirect(`/inv/edit/${inv_id}`);
+//   }
+// };
+// invCont.updateInventory = async (req, res) => {
+//   const inv_id = parseInt(req.params.inv_id);
+//   console.log("Update request received for inv_id:", inv_id);
+
+//   const {
+//     classification_id,
+//     inv_make,
+//     inv_model,
+//     inv_year,
+//     inv_description,
+//     inv_price,
+//     inv_image,
+//     inv_thumbnail,
+//     inv_miles,
+//     inv_color,
+//   } = req.body; // 클라이언트에서 전송한 데이터 받기
+
+//   // 클라이언트에서 받은 데이터 출력
+//   console.log("Received data:", req.body); // 클라이언트에서 받은 데이터가 제대로 출력되는지 확인
+
+//   try {
+//     // 업데이트 모델 호출 직전에 로그 찍기
+//     console.log("Data to update:", {
+//       inv_id,
+//       classification_id,
 //       inv_make,
 //       inv_model,
 //       inv_year,
 //       inv_description,
+//       inv_price,
 //       inv_image,
 //       inv_thumbnail,
-//       inv_price,
 //       inv_miles,
 //       inv_color,
-//       classification_id,
-//       messages: req.flash(),
 //     });
+
+//     const result = await invModel.updateInventoryItem({
+//       inv_id,
+//       classification_id,
+//       inv_make,
+//       inv_model,
+//       inv_year,
+//       inv_description,
+//       inv_price,
+//       inv_image,
+//       inv_thumbnail,
+//       inv_miles,
+//       inv_color,
+//     });
+
+//     console.log("Update result:", result); // 결과 확인, 이 로그가 출력되지 않으면 invModel.updateInventoryItem() 함수에 문제가 있음
+
+//     if (result.rowCount > 0) {
+//       req.flash("info", "Inventory updated successfully!");
+//       return res.redirect("/inv/");
+//     } else {
+//       req.flash("error", "No rows updated. Check the inv_id.");
+//       return res.redirect(`/inv/edit/${inv_id}`);
+//     }
+//   } catch (error) {
+//     console.error("updateInventory error:", error);
+//     req.flash("error", "Failed to update inventory.");
+//     res.redirect(`/inv/edit/${inv_id}`);
 //   }
 // };
 
 invCont.updateInventory = async (req, res) => {
-  const inv_id = parseInt(req.params.inv_id);
-  console.log("req.params.inv_id: ", req.params.inv_id);
-
-  if (isNaN(inv_id)) {
-    req.flash("error", "Invalid inventory ID.");
-    return res.redirect(`/inv/edit/${req.params.inv_id}`);
-  }
-
-  const updatedData = req.body;
-
+  console.log("🔹 updateInventory function called!");
   try {
-    console.log("Received body data: ", updatedData);
-    const updateResult = await invModel.updateInventoryItem(
+    const {
       inv_id,
-      updatedData
+      classification_id,
+      inv_make,
+      inv_model,
+      inv_year,
+      inv_description,
+      inv_price,
+      inv_image,
+      inv_thumbnail,
+      inv_miles,
+      inv_color,
+    } = req.body;
+
+    console.log("🔹 Update Data:", req.body);
+
+    const result = await pool.query(
+      `UPDATE inventory 
+       SET classification_id = $1, inv_make = $2, inv_model = $3, inv_year = $4, inv_description = $5, 
+           inv_price = $6, inv_image = $7, inv_thumbnail = $8, inv_miles = $9, inv_color = $10 
+       WHERE inv_id = $11 RETURNING *`,
+      [
+        classification_id,
+        inv_make,
+        inv_model,
+        inv_year,
+        inv_description,
+        inv_price,
+        inv_image,
+        inv_thumbnail,
+        inv_miles,
+        inv_color,
+        inv_id,
+      ]
     );
 
-    console.log("Update result: ", updateResult.rowCount);
-    if (updateResult.rowCount > 0) {
-      req.flash("success", "Inventory item updated successfully!");
-      res.redirect(`/inv/detail/${inv_id}`);
-    } else {
-      req.flash("error", "Failed to update inventory.");
-      res.redirect(`/inv/edit/${inv_id}`);
+    console.log("🔹 Update Result:", result);
+
+    if (result.rowCount === 0) {
+      req.flash("error", "Update failed. Item not found.");
+      return res.redirect("/inv/edit/" + inv_id);
     }
-  } catch (error) {
-    console.error("Update error:", error);
-    req.flash("error", "An error occurred while updating inventory.");
-    res.redirect(`/inv/edit/${inv_id}`);
+
+    req.flash("success", "Inventory updated successfully!");
+    res.redirect("/inv/");
+  } catch (err) {
+    console.error("🔹 Update Error:", err);
+    req.flash("error", "Something went wrong.");
+    res.redirect("/inv/edit/" + req.body.inv_id);
   }
 };
 
